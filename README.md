@@ -15,6 +15,17 @@ Example use cases:
 [![Build Status](https://travis-ci.org/mtymek/blast-view.svg?branch=master)](https://travis-ci.org/mtymek/blast-view)
 [![Coverage Status](https://coveralls.io/repos/mtymek/blast-view/badge.svg?branch=master&service=github)](https://coveralls.io/github/mtymek/blast-view?branch=master)
 
+
+Installation
+------------
+
+1. Install package using composer:
+
+    ```bash
+    $ composer require mtymek/blast-view ~0.5
+    ```
+
+2. Add `Blast\View` to module list in your system configuration (`config/application.config.php` file).
   
 Configuration
 -------------
