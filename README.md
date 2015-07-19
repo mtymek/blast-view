@@ -11,6 +11,10 @@ Example use cases:
 - generating HTML from command line applications
 - rendering HTML e-mails
 - using `Zend\View` without other Zend Framework components
+
+[![Build Status](https://travis-ci.org/mtymek/blast-view.svg?branch=master)](https://travis-ci.org/mtymek/blast-view)
+[![Coverage Status](https://coveralls.io/repos/mtymek/blast-view/badge.svg)](https://coveralls.io/r/mtymek/blast-view)
+
   
 Configuration
 -------------
