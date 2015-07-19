@@ -8,6 +8,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Resolver\TemplatePathStack;
 use Zend\View\ViewEvent;
+use Zend\View\View as ZendView;
 
 class ViewFactory implements FactoryInterface
 {
@@ -32,11 +33,13 @@ class ViewFactory implements FactoryInterface
         $phpRenderer = new PhpRenderer();
         $phpRenderer->setResolver($resolver);
 
-        $view = new View();
-        $view->getEventManager()
+        $zendView = new ZendView;
+        $zendView->getEventManager()
             ->attach(ViewEvent::EVENT_RENDERER, function () use ($phpRenderer) {
                 return $phpRenderer;
             });
+
+        $view = new View($zendView);
 
         return $view;
     }
