@@ -2,9 +2,12 @@
 
 namespace BlastTest\View;
 
+use Blast\View\Module;
+use Blast\View\View;
 use PHPUnit_Framework_TestCase;
 use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
+use Zend\View\Model\ViewModel;
 
 class ModuleTest extends PHPUnit_Framework_TestCase
 {
@@ -15,7 +18,8 @@ class ModuleTest extends PHPUnit_Framework_TestCase
 
     private function getSmConfig()
     {
-        $config = include __DIR__ . '/../config/module.config.php';
+        $module = new Module();
+        $config = $module->getConfig();
         return $config['service_manager'];
     }
 
@@ -58,5 +62,19 @@ class ModuleTest extends PHPUnit_Framework_TestCase
     {
         $this->assertTrue($this->serviceManager->has($serviceName));
         $this->assertInstanceOf($serviceName, $this->serviceManager->get($serviceName));
+    }
+
+    public function testViewFactoryCreatesLayoutIfLayoutTemplateIsConfigured()
+    {
+        $config = [
+            'view_manager' => [
+                'layout_template' => 'layout-tpl.phtml',
+            ],
+        ];
+        $this->serviceManager->setAllowOverride(true);
+        $this->serviceManager->setService('Configuration', array_merge($this->getSmConfig(), $config));
+        $view = $this->serviceManager->get(View::class);
+        $this->assertInstanceOf(ViewModel::class, $view->getLayout());
+        $this->assertEquals('layout-tpl.phtml', $view->getLayout()->getTemplate());
     }
 }
