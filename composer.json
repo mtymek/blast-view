@@ -1,6 +1,6 @@
 {
     "name": "mtymek/blast-view",
-    "description": "Template renderer using templating engine from Zend Framework 2 - Zend\\View.",
+    "description": "Standalone template renderer using templating engine from Zend Framework 2 - Zend\\View.",
     "keywords": [
         "zend view",
         "template",

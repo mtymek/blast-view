@@ -1,7 +1,7 @@
 Blast\View
 ==========
 
-Template renderer using templating engine from Zend Framework 2 - `Zend\View`.
+Standalone template renderer using templating engine from Zend Framework 2 - `Zend\View`.
 
 You can use it to render PHTML files outside the context of ZF2 MVC, but with all `Zend\View` features: nested 
 templates, view helpers, etc.
