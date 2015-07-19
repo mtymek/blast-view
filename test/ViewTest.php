@@ -13,9 +13,31 @@ class ViewTest extends PHPUnit_Framework_TestCase
     public function testRenderPassesViewModelToUnderlyingZendView()
     {
         $viewModel = new ViewModel();
+        $viewModel->setTemplate('index.phtml');
         $zendView = $this->prophesize(ZendView::class);
-        $zendView->render($viewModel)->willReturn('OUTPUT');
+        $zendView->render(Argument::that(function ($viewModel) {
+            $this->assertEquals('index.phtml', $viewModel->getTemplate());
+            return true;
+        }))->willReturn('OUTPUT');
         $view = new View($zendView->reveal());
+
+        $output = $view->render($viewModel);
+        $this->assertEquals('OUTPUT', $output);
+    }
+
+    public function testViewCanRenderLayout()
+    {
+        $layout = new ViewModel();
+        $layout->setTemplate('layout.phtml');
+
+        $viewModel = new ViewModel();
+        $viewModel->setTemplate('index.phtml');
+        $zendView = $this->prophesize(ZendView::class);
+        $zendView->render(Argument::that(function ($viewModel) {
+            $this->assertEquals('layout.phtml', $viewModel->getTemplate());
+            return true;
+        }))->willReturn('OUTPUT');
+        $view = new View($zendView->reveal(), $layout);
 
         $output = $view->render($viewModel);
         $this->assertEquals('OUTPUT', $output);

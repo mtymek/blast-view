@@ -5,6 +5,7 @@ namespace Blast\View\Factory;
 use Blast\View\View;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Resolver\TemplatePathStack;
 use Zend\View\ViewEvent;
@@ -12,6 +13,29 @@ use Zend\View\View as ZendView;
 
 class ViewFactory implements FactoryInterface
 {
+    private function createZendView(ServiceLocatorInterface $serviceLocator)
+    {
+        $config = $serviceLocator->get('Configuration');
+
+        if (isset($config['view_manager'], $config['view_manager']['template_path_stack'])) {
+            $templatePaths = $config['view_manager']['template_path_stack'];
+        } else {
+            $templatePaths = [];
+        }
+        $resolver = new TemplatePathStack([
+                                              'script_paths' => $templatePaths,
+                                          ]);
+        $phpRenderer = new PhpRenderer();
+        $phpRenderer->setResolver($resolver);
+        $zendView = new ZendView;
+        $zendView->getEventManager()
+            ->attach(ViewEvent::EVENT_RENDERER, function () use ($phpRenderer) {
+                return $phpRenderer;
+            });
+
+        return $zendView;
+    }
+
     /**
      * Create service
      *
@@ -22,24 +46,14 @@ class ViewFactory implements FactoryInterface
     {
         $config = $serviceLocator->get('Configuration');
 
-        if (isset($config['view_manager'], $config['view_manager']['template_path_stack'])) {
-            $templatePaths = $config['view_manager']['template_path_stack'];
+        if (isset($config['view_manager']['layout_template'])) {
+            $layout = new ViewModel();
+            $layout->setTemplate($config['view_manager']['layout_template']);
         } else {
-            $templatePaths = [];
+            $layout = null;
         }
-        $resolver = new TemplatePathStack([
-            'script_paths' => $templatePaths,
-        ]);
-        $phpRenderer = new PhpRenderer();
-        $phpRenderer->setResolver($resolver);
 
-        $zendView = new ZendView;
-        $zendView->getEventManager()
-            ->attach(ViewEvent::EVENT_RENDERER, function () use ($phpRenderer) {
-                return $phpRenderer;
-            });
-
-        $view = new View($zendView);
+        $view = new View($this->createZendView($serviceLocator), $layout);
 
         return $view;
     }
