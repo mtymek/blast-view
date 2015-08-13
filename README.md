@@ -95,3 +95,19 @@ Layout template has the same structure as in ZF2:
 </body>
 </html>
 ```
+
+### View Helpers
+
+`Blast\View` supports custom view helpers via `view_helpers` configuration key, in the same
+manner as ZF2 does. Here's an example config that registers `foo` view helper:  
+
+```php
+return [
+    'view_helpers' => [
+        'invokables' => [
+            'foo' => FooHelper::class,
+        ]
+    ],
+];
+
+```
