@@ -40,7 +40,9 @@ class ViewFactory implements FactoryInterface
         // view helpers?
         if (isset($config['view_helpers'])) {
             $helperManagerConfig = new Config($config['view_helpers']);
-            $phpRenderer->setHelperPluginManager(new HelperPluginManager($helperManagerConfig));
+            $pluginManager = new HelperPluginManager($helperManagerConfig);
+            $pluginManager->setServiceLocator($serviceLocator);
+            $phpRenderer->setHelperPluginManager($pluginManager);
         }
 
         return $zendView;
