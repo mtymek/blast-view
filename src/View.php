@@ -2,7 +2,7 @@
 
 namespace Blast\View;
 
-use Zend\View\Model\ModelInterface as Model;
+use Zend\View\Model\ModelInterface;
 use Zend\View\Model\ViewModel;
 use Zend\View\View as ZendView;
 
@@ -48,12 +48,12 @@ class View
     /**
      * Render the provided model.
      *
-     * @param Model $model
+     * @param ModelInterface $model
      * @return string
      */
-    public function render(Model $model)
+    public function render(ModelInterface $model)
     {
-        if ($this->layout) {
+        if ($this->layout && !$model->terminate()) {
             $this->layout->addChild($model);
             $model = $this->layout;
         }

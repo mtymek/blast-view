@@ -63,18 +63,4 @@ class ModuleTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->serviceManager->has($serviceName));
         $this->assertInstanceOf($serviceName, $this->serviceManager->get($serviceName));
     }
-
-    public function testViewFactoryCreatesLayoutIfLayoutTemplateIsConfigured()
-    {
-        $config = [
-            'view_manager' => [
-                'layout_template' => 'layout-tpl.phtml',
-            ],
-        ];
-        $this->serviceManager->setAllowOverride(true);
-        $this->serviceManager->setService('Configuration', array_merge($this->getSmConfig(), $config));
-        $view = $this->serviceManager->get(View::class);
-        $this->assertInstanceOf(ViewModel::class, $view->getLayout());
-        $this->assertEquals('layout-tpl.phtml', $view->getLayout()->getTemplate());
-    }
 }

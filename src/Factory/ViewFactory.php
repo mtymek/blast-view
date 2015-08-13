@@ -3,13 +3,15 @@
 namespace Blast\View\Factory;
 
 use Blast\View\View;
+use Zend\ServiceManager\Config;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\View\HelperPluginManager;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Resolver\TemplatePathStack;
-use Zend\View\ViewEvent;
 use Zend\View\View as ZendView;
+use Zend\View\ViewEvent;
 
 class ViewFactory implements FactoryInterface
 {
@@ -22,9 +24,11 @@ class ViewFactory implements FactoryInterface
         } else {
             $templatePaths = [];
         }
-        $resolver = new TemplatePathStack([
-                                              'script_paths' => $templatePaths,
-                                          ]);
+        $resolver = new TemplatePathStack(
+            [
+                'script_paths' => $templatePaths,
+            ]
+        );
         $phpRenderer = new PhpRenderer();
         $phpRenderer->setResolver($resolver);
         $zendView = new ZendView;
@@ -32,6 +36,12 @@ class ViewFactory implements FactoryInterface
             ->attach(ViewEvent::EVENT_RENDERER, function () use ($phpRenderer) {
                 return $phpRenderer;
             });
+
+        // view helpers?
+        if (isset($config['view_helpers'])) {
+            $helperManagerConfig = new Config($config['view_helpers']);
+            $phpRenderer->setHelperPluginManager(new HelperPluginManager($helperManagerConfig));
+        }
 
         return $zendView;
     }
